@@ -1,0 +1,4 @@
+Training samples: 614
+Test samples: 154
+Features: ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+Target distribution (train): {0: 400, 1: 214}
