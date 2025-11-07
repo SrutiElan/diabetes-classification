@@ -8,20 +8,14 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 def load_processed_data():
     """
-    Load pre-processed data that Sruti created in the EDA notebook
-    This is the MAIN function everyone uses!
-    No need to clean data yourself - it's already done.
-    
-    Returns:
-        X_train, X_test, y_train, y_test, feature_names
+    Load pre-processed from EDA notebook
+    Returns: X_train, X_test, y_train, y_test, feature_names
     """
     try:
         train_df = pd.read_csv('../data/processed/train.csv')
         test_df = pd.read_csv('../data/processed/test.csv')
     except FileNotFoundError:
-        print("❌ Error: Processed data not found!")
-        print("   Ask Sruti to run the EDA notebook first (notebooks/00_EDA.ipynb)")
-        print("   Or check that you're running from the notebooks/ directory")
+        print("Error, make sure that you're running from the notebooks/ directory")
         raise
     
     # Split features and target
@@ -33,43 +27,43 @@ def load_processed_data():
     
     feature_names = train_df.drop('Outcome', axis=1).columns.tolist()
     
-    print(f"✅ Data loaded successfully!")
-    print(f"   Training samples: {X_train.shape[0]}")
-    print(f"   Test samples: {X_test.shape[0]}")
-    print(f"   Features: {len(feature_names)}")
+    print(f"Data loaded successfully!")
+    print(f"Training samples: {X_train.shape[0]}")
+    print(f"Test samples: {X_test.shape[0]}")
+    print(f"Features: {len(feature_names)}")
     
     return X_train, X_test, y_train, y_test, feature_names
 
-def load_and_clean_data(filepath='../data/pima-indians-diabetes.csv'):
-    # Load and clean the Pima diabetes dataset
-    # Returns:  X_train, X_test, y_train, y_test, scaler
+# def load_and_clean_data(filepath='../data/pima-indians-diabetes.csv'):
+#     # Load and clean the Pima diabetes dataset
+#     # Returns:  X_train, X_test, y_train, y_test, scaler
     
-    # Load data
-    column_names = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 
-                    'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome']
-    df = pd.read_csv(filepath, names=column_names)
+#     # Load data
+#     column_names = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 
+#                     'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome']
+#     df = pd.read_csv(filepath, names=column_names)
     
-    # Handle missing values (zeros)
-    zero_not_allowed = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
-    for col in zero_not_allowed:
-        df[col] = df[col].replace(0, np.nan)
-        df[col].fillna(df[col].median(), inplace=True)
+#     # Handle missing values (zeros)
+#     zero_not_allowed = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
+#     for col in zero_not_allowed:
+#         df[col] = df[col].replace(0, np.nan)
+#         df[col].fillna(df[col].median(), inplace=True)
     
-    # Split features and target
-    X = df.drop('Outcome', axis=1)
-    y = df['Outcome']
+#     # Split features and target
+#     X = df.drop('Outcome', axis=1)
+#     y = df['Outcome']
     
-    # Train/test split
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
-    )
+#     # Train/test split
+#     X_train, X_test, y_train, y_test = train_test_split(
+#         X, y, test_size=0.2, random_state=42, stratify=y
+#     )
     
-    # Scale features
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+#     # Scale features
+#     scaler = StandardScaler()
+#     X_train_scaled = scaler.fit_transform(X_train)
+#     X_test_scaled = scaler.transform(X_test)
     
-    return X_train_scaled, X_test_scaled, y_train, y_test, scaler, X.columns
+#     return X_train_scaled, X_test_scaled, y_train, y_test, scaler, X.columns
 
 
 def evaluate_model(model, X_train, X_test, y_train, y_test, model_name="Model"):
