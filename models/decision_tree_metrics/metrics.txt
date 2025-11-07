@@ -1,4 +1,0 @@
-DecisionTree
-Train accuracy: 0.7638436482084691
-Test accuracy: 0.6948051948051948
-ROC AOC: 0.7937037037037037
