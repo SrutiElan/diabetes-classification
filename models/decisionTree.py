@@ -1,50 +1,16 @@
 import pandas as pd
-import os
+import os, sys
+# this is just so relative imports work
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn import metrics
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from src.utils import *
 
-# Load the data and shuffle it
-cwd_path = os.getcwd()
-test_data_path = os.path.join(cwd_path, "data", "processed", "test.csv")
-train_data_path = os.path.join(cwd_path, "data", "processed", "train.csv")
-
-test_df = pd.read_csv(test_data_path).sample(frac=1, random_state=18)
-train_df = pd.read_csv(train_data_path).sample(frac=1, random_state=18)
-
-# load in the training/testing features and targets
-X_train = train_df[
-    [
-        "Pregnancies",
-        "Glucose",
-        "BloodPressure",
-        "SkinThickness",
-        "Insulin",
-        "BMI",
-        "DiabetesPedigreeFunction",
-        "Age",
-    ]
-]
-
-y_train = train_df["Outcome"]
-
-X_test = test_df[
-    [
-        "Pregnancies",
-        "Glucose",
-        "BloodPressure",
-        "SkinThickness",
-        "Insulin",
-        "BMI",
-        "DiabetesPedigreeFunction",
-        "Age",
-    ]
-]
-
-y_test = test_df["Outcome"]
+X_train, X_test, y_train, y_test, feature_names = load_processed_data()
 
 dtc = DecisionTreeClassifier()
 # gini and entropy are both measures of impurity
@@ -65,7 +31,7 @@ print(f"Best Parameters: {dtc_cv.best_params_}")
 best_dtc = dtc_cv.best_estimator_
 
 # At last we find the metrics
-metrics_dir_path = os.path.join(cwd_path, "models", "decision_tree_metrics")
+metrics_dir_path = os.path.join(os.getcwd(), "models", "decision_tree_metrics")
 os.makedirs(metrics_dir_path, exist_ok=True)
 
 # Now lets create a confusion matrix
