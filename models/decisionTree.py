@@ -30,36 +30,40 @@ print(f"Best Parameters: {dtc_cv.best_params_}")
 
 best_dtc = dtc_cv.best_estimator_
 
-# At last we find the metrics
-metrics_dir_path = os.path.join(os.getcwd(), "models", "decision_tree_metrics")
+model_metrics = evaluate_model(best_dtc, X_train, X_test, y_train, y_test, "DecisionTree")
+
+# # At last we find the metrics
+metrics_dir_path = os.path.join(os.getcwd(), "decision_tree_metrics")
 os.makedirs(metrics_dir_path, exist_ok=True)
 
-# Now lets create a confusion matrix
-y_pred = best_dtc.predict(X_test)
-dtc_matrix = metrics.confusion_matrix(y_test, y_pred)
-p = sns.heatmap(pd.DataFrame(dtc_matrix), annot=True, cmap="YlGnBu", fmt="g")
-plt.title("Confusion Matrix")
-plt.ylabel("Actual Case of Diabetes")
-plt.xlabel("Predicted Case of Diabetes")
-plt.savefig(os.path.join(metrics_dir_path, "confusion_matrix.png"))
+# # Now lets create a confusion matrix
+# y_pred = best_dtc.predict(X_test)
+# dtc_matrix = metrics.confusion_matrix(y_test, y_pred)
+# p = sns.heatmap(pd.DataFrame(dtc_matrix), annot=True, cmap="YlGnBu", fmt="g")
+# plt.title("Confusion Matrix")
+# plt.ylabel("Actual Case of Diabetes")
+# plt.xlabel("Predicted Case of Diabetes")
+# plt.savefig(os.path.join(metrics_dir_path, "confusion_matrix.png"))
 
-# Now lets create our ROC curve 
-plt.clf()
-y_pred_proba = best_dtc.predict_proba(X_test)[:,1]
+# # Now lets create our ROC curve 
+# plt.clf()
+# y_pred_proba = best_dtc.predict_proba(X_test)[:,1]
 
-# fpr = False Positive Rate
-# tpr = True Positive Rate
-fpr, tpr, threshold = metrics.roc_curve(y_test, y_pred_proba)
+# # fpr = False Positive Rate
+# # tpr = True Positive Rate
+# fpr, tpr, threshold = metrics.roc_curve(y_test, y_pred_proba)
 
-plt.plot([0,1], [0,1], "k--")
-plt.plot(fpr, tpr, label="dtc")
-plt.xlabel("FPR")
-plt.ylabel("TPR")
-plt.title("Decision Tree ROC Curve")
-plt.legend()
-plt.savefig(os.path.join(metrics_dir_path, "roc_curve.png"))
+# plt.plot([0,1], [0,1], "k--")
+# plt.plot(fpr, tpr, label="dtc")
+# plt.xlabel("FPR")
+# plt.ylabel("TPR")
+# plt.title("Decision Tree ROC Curve")
+# plt.legend()
+# plt.savefig(os.path.join(metrics_dir_path, "roc_curve.png"))
 
-# last lets get a file with the other metrics
+# # last lets get a file with the other metrics
 with open(os.path.join(metrics_dir_path,"metrics.txt"), "w") as f:
-    f.write(metrics.classification_report(y_test, y_pred))
-    f.write(f"Area Under The Curve Score: {metrics.roc_auc_score(y_test, y_pred_proba)}")
+    f.write(model_metrics["model_name"] + "\n")
+    f.write("Train accuracy: " + str(model_metrics["train_accuracy"]) + "\n")
+    f.write("Test accuracy: " + str(model_metrics["test_accuracy"]) + "\n")
+    f.write("ROC AOC: " + str(model_metrics["roc_auc"]) + "\n")
