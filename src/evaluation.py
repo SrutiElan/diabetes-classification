@@ -73,7 +73,7 @@ def evaluate_model(model, X_train, X_test, y_train, y_test, model_name="Model", 
     
     # Save results to JSON
     if save_results:
-        save_path = f'../results/metrics/{model_name.lower().replace(" ", "_")}_metrics.json'
+        save_path = f'results/metrics/{model_name.lower().replace(" ", "_")}_metrics.json'
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         
         with open(save_path, 'w') as f:
@@ -99,7 +99,7 @@ def plot_confusion_matrix(y_true, y_pred, model_name="Model", save_path=None):
     plt.xlabel('Predicted')
     
     if save_path is None:
-        save_path = f'../results/confusion_matrices/{model_name.lower().replace(" ", "_")}_cm.png'
+        save_path = f'results/confusion_matrices/{model_name.lower().replace(" ", "_")}_cm.png'
     
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
@@ -125,7 +125,7 @@ def plot_roc_curve(y_true, y_proba, model_name="Model", save_path=None):
     plt.grid(alpha=0.3)
     
     if save_path is None:
-        save_path = f'../results/roc_curves/{model_name.lower().replace(" ", "_")}_roc.png'
+        save_path = f'results/roc_curves/{model_name.lower().replace(" ", "_")}_roc.png'
     
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     plt.savefig(save_path, dpi=300, bbox_inches='tight')

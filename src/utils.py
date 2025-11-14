@@ -12,8 +12,8 @@ def load_processed_data():
     Returns: X_train, X_test, y_train, y_test, feature_names
     """
     try:
-        train_df = pd.read_csv('../data/processed/train.csv')
-        test_df = pd.read_csv('../data/processed/test.csv')
+        train_df = pd.read_csv('data/processed/train.csv')
+        test_df = pd.read_csv('data/processed/test.csv')
     except FileNotFoundError:
         print("Error, make sure that you're running from the notebooks/ directory")
         raise
