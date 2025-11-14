@@ -1,5 +1,5 @@
 Dataset: Pima Indians Diabetes
-Total samples: 769
+Total samples: 768
 Training samples: 614
 Test samples: 154
 Features: ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
@@ -8,7 +8,6 @@ Class distribution (train): {0: 400, 1: 214}
 Class distribution (test): {0: 100, 1: 54}
 
 Data Processing:
-- Zero values replaced with median for: ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
 - Features scaled using StandardScaler
 - Train/test split: 80/20 with stratification
 - Random seed: 42
