@@ -1,12 +1,8 @@
-import pandas as pd
 import os
 import sys
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn import metrics
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 # So that imports work
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
