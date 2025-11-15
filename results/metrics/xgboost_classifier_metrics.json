@@ -1,0 +1,10 @@
+{
+    "model_name": "XGBoost Classifier",
+    "train_accuracy": 0.9820846905537459,
+    "test_accuracy": 0.7727272727272727,
+    "precision": 0.7021276595744681,
+    "recall": 0.6111111111111112,
+    "f1_score": 0.6534653465346535,
+    "roc_auc": 0.8214814814814815,
+    "timestamp": "2025-11-15 13:34:28"
+}
