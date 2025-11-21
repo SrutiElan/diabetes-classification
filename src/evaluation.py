@@ -66,7 +66,7 @@ def evaluate_model(model, X_train, X_test, y_train, y_test, model_name="Model", 
     # Check overfitting
     overfit_gap = results['train_accuracy'] - results['test_accuracy']
     if overfit_gap > 0.10:
-        print(f"\n⚠️  Warning: Possible overfitting (train-test gap: {overfit_gap:.3f})")
+        print(f"\n Warning: Possible overfitting (train-test gap: {overfit_gap:.3f})")
     
     print(f"\nClassification Report:")
     print(classification_report(y_test, y_test_pred, target_names=['No Diabetes', 'Diabetes']))
@@ -103,7 +103,7 @@ def plot_confusion_matrix(y_true, y_pred, model_name="Model", save_path=None):
     
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    print(f"✅ Confusion matrix saved to {save_path}")
+    print(f"Confusion matrix saved to {save_path}")
     
     plt.show()
 
@@ -129,6 +129,6 @@ def plot_roc_curve(y_true, y_proba, model_name="Model", save_path=None):
     
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    print(f"✅ ROC curve saved to {save_path}")
+    print(f" ROC curve saved to {save_path}")
     
     plt.show()
