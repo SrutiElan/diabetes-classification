@@ -10,7 +10,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from src.utils import load_processed_data
-from src.evaluation import evaluate_model
+from src.evaluation import evaluate_model, plot_roc_curve, plot_confusion_matrix
 
 X_train, X_test, y_train, y_test, feature_names = load_processed_data()
 
@@ -31,5 +31,10 @@ print(f"Best Score: {dtc_cv.best_score_}")
 print(f"Best Parameters: {dtc_cv.best_params_}")
 
 best_dtc = dtc_cv.best_estimator_
+y_pred = best_dtc.predict(X_test)
 
 evaluate_model(best_dtc, X_train, X_test, y_train, y_test, "Decision Tree")
+
+plot_confusion_matrix(y_pred, y_test, "Decision Tree")
+
+plot_roc_curve(y_pred, y_test, "Decision Tree")

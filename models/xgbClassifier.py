@@ -7,7 +7,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from xgboost import XGBClassifier
-from src.evaluation import evaluate_model
+from src.evaluation import evaluate_model, plot_roc_curve, plot_confusion_matrix
 from src.utils import load_processed_data
 from sklearn.model_selection import GridSearchCV
 import numpy as np
@@ -29,4 +29,10 @@ print("Best ROC AUC score: ", xgb_clf_cv.best_score_)
 
 best_xgb_clf = xgb_clf_cv.best_estimator_
 
+y_pred = best_xgb_clf.predict(X_test)
+
 evaluate_model(best_xgb_clf, X_train, X_test, y_train, y_test, "XGBoost Classifier")
+
+plot_confusion_matrix(y_pred, y_test, "XGBoost Classifier")
+
+plot_roc_curve(y_pred, y_test, "XGBoost Classifier")
