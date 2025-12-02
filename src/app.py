@@ -19,75 +19,105 @@ def create_grid(n, m, container):
     return grid
 
 
-col1, col2 = st.columns(2, vertical_alignment="center")
-col1.subheader("Please input information to predict if you have diabetes")
-col1_grid = create_grid(4, 2, col1)
+st.subheader("Please input information to predict if you have diabetes")
 
-# Getting the user's data
-pregnancies = col1_grid[0][0].number_input(
+# Top: two rows of four inputs (full width)
+row1 = st.columns(4)
+row2 = st.columns(4)
+
+# Row 1 inputs
+pregnancies = row1[0].number_input(
     "How Many Pregnancies have you had?", min_value=0, step=1
 )
-glucose = col1_grid[0][1].number_input(
+glucose = row1[1].number_input(
     "What is your glucose level(mg/Dl)? ", min_value=0, step=1
 )
-blood_pressure = col1_grid[1][0].number_input(
+blood_pressure = row1[2].number_input(
     "What is your diastolic blood pressure (mm Hg)?", min_value=0
 )
-skin_thickness = col1_grid[3][0].number_input(
-    "What is your triceps skin fold thickness in millimeters( default value is average, in case you don't know)?",
+skin_thickness = row2[2].number_input(
+    "What is your triceps skin fold thickness in millimeters (default value is average, in case you don't know)?",
     min_value=0.0,
     value=17.0,
 )
-insulin = col1_grid[1][1].number_input("What are your insulin levels? (mu U/ml)")
-diabetes_pedigree_function = col1_grid[3][1].number_input(
-    "What is your diabetes pedigree function. (The likelihood you have diabetes based on your family history)",
-    min_value=0.0,
-    step=0.1,
-)
-age = col1_grid[2][0].number_input("How old are you?", min_value=0, step=1)
-# BMI input placed in the unused cell
-bmi = col1_grid[2][1].number_input(
+
+# Row 2 inputs
+insulin = row1[3].number_input("What are your insulin levels? (mu U/ml)")
+bmi = row2[1].number_input(
     "What is your BMI (Body Mass Index)?",
     min_value=0.0,
     value=25.0,
 )
+diabetes_pedigree_function = row2[3].number_input(
+    "What is your diabetes pedigree function. (The likelihood you have diabetes based on your family history)",
+    min_value=0.0,
+    step=0.1,
+)
+age = row2[0].number_input("How old are you?", min_value=0, step=1)
 
-# Prediction button
-predict_btn = col2.button("Predict Diabetes")
 
-if predict_btn:
-    try:
-        # Load scaler and model
-        with open("./models/scaler.pkl", "rb") as f:
-            scaler = pickle.load(f)
+# Separator and bottom area for the model
+st.markdown("---")
+bottom_left, bottom_right = st.columns(2)
 
-        with open("./models/xgboostClassifier.pkl", "rb") as f:
-            model = pickle.load(f)
+# Optionally use the left bottom column for notes or model info
+with bottom_left:
+    # Place the Predict button all the way to the left side of the page
+    predict_btn = st.button("Predict Diabetes")
 
-        features = np.array([
-            pregnancies,
-            glucose,
-            blood_pressure,
-            skin_thickness,
-            insulin,
-            bmi,
-            diabetes_pedigree_function,
-            age,
-        ]).reshape(1, -1)
+with bottom_right:
+    # Result placeholder lives in the right column
+    result_placeholder = bottom_right.empty()
 
-        scaled_features = scaler.transform(features)
-        # Scale then predict
-        pred = model.predict(scaled_features)
-        proba = None
-        if hasattr(model, "predict_proba"):
-            proba = model.predict_proba(scaled_features)[0, 1]
+    if predict_btn:
+        result_placeholder.info("Running model...")
+        try:
+            # Load scaler and model
+            with open("./models/scaler.pkl", "rb") as f:
+                scaler = pickle.load(f)
 
-        if int(pred[0]) == 1:
-            col2.success(f"Prediction: Positive for diabetes. Probability: {proba:.2f}" if proba is not None else "Prediction: Positive for diabetes.")
-        else:
-            col2.success(f"Prediction: Negative for diabetes. Probability: {proba:.2f}" if proba is not None else "Prediction: Negative for diabetes.")
+            with open("./models/xgboostClassifier.pkl", "rb") as f:
+                model = pickle.load(f)
 
-    except FileNotFoundError as e:
-        col2.error(f"Model/scaler file not found: {e}")
-    except Exception as e:
-        col2.error(f"An error occurred while predicting: {e}")
+            features = np.array([
+                pregnancies,
+                glucose,
+                blood_pressure,
+                skin_thickness,
+                insulin,
+                bmi,
+                diabetes_pedigree_function,
+                age,
+            ]).reshape(1, -1)
+
+            # Try scaling, fall back to raw features on failure
+            try:
+                scaled_features = scaler.transform(features)
+            except Exception:
+                scaled_features = features
+
+            # Predict
+            pred = model.predict(scaled_features)
+            proba = None
+            if hasattr(model, "predict_proba"):
+                try:
+                    proba = model.predict_proba(scaled_features)[0, 1]
+                except Exception:
+                    proba = None
+
+            # Show result at the bottom_right
+            if int(pred[0]) == 1:
+                if proba is not None:
+                    result_placeholder.success(f"Prediction: Positive for diabetes. Probability: {proba:.2f}")
+                else:
+                    result_placeholder.success("Prediction: Positive for diabetes.")
+            else:
+                if proba is not None:
+                    result_placeholder.success(f"Prediction: Negative for diabetes. Probability: {proba:.2f}")
+                else:
+                    result_placeholder.success("Prediction: Negative for diabetes.")
+
+        except FileNotFoundError as e:
+            result_placeholder.error(f"Model/scaler file not found: {e}")
+        except Exception as e:
+            result_placeholder.error(f"An error occurred while predicting: {e}")
