@@ -1,5 +1,6 @@
 import os
 import sys
+import pickle
 
 # So that imports work
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,3 +37,7 @@ evaluate_model(best_xgb_clf, X_train, X_test, y_train, y_test, "XGBoost Classifi
 plot_confusion_matrix(y_pred, y_test, "XGBoost Classifier")
 
 plot_roc_curve(y_pred, y_test, "XGBoost Classifier")
+
+# Pickling the model 
+with open("./models/xgboostClassifier.pkl", "wb") as f:
+    pickle.dump(best_xgb_clf, f)
