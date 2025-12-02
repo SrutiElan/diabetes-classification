@@ -17,7 +17,7 @@ xgboost
 # nltk==3.8.1
 
 # # Deployment (Week 5+)
-# streamlit==1.25.0
+streamlit==1.25.0
 # # flask==2.3.2  # Alternative to Streamlit
 
 # # Utilities
