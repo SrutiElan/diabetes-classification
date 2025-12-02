@@ -1,4 +1,6 @@
 import streamlit as st
+import pickle
+import numpy as np
 
 st.title("AISERPANTS")
 
@@ -29,7 +31,7 @@ glucose = col1_grid[0][1].number_input(
     "What is your glucose level(mg/Dl)? ", min_value=0, step=1
 )
 blood_pressure = col1_grid[1][0].number_input(
-    "What is your blood pressure (mm Hg)?", min_value=0
+    "What is your diastolic blood pressure (mm Hg)?", min_value=0
 )
 skin_thickness = col1_grid[3][0].number_input(
     "What is your triceps skin fold thickness in millimeters( default value is average, in case you don't know)?",
@@ -43,3 +45,49 @@ diabetes_pedigree_function = col1_grid[3][1].number_input(
     step=0.1,
 )
 age = col1_grid[2][0].number_input("How old are you?", min_value=0, step=1)
+# BMI input placed in the unused cell
+bmi = col1_grid[2][1].number_input(
+    "What is your BMI (Body Mass Index)?",
+    min_value=0.0,
+    value=25.0,
+)
+
+# Prediction button
+predict_btn = col2.button("Predict Diabetes")
+
+if predict_btn:
+    try:
+        # Load scaler and model
+        with open("./models/scaler.pkl", "rb") as f:
+            scaler = pickle.load(f)
+
+        with open("./models/xgboostClassifier.pkl", "rb") as f:
+            model = pickle.load(f)
+
+        features = np.array([
+            pregnancies,
+            glucose,
+            blood_pressure,
+            skin_thickness,
+            insulin,
+            bmi,
+            diabetes_pedigree_function,
+            age,
+        ]).reshape(1, -1)
+
+        scaled_features = scaler.transform(features)
+        # Scale then predict
+        pred = model.predict(scaled_features)
+        proba = None
+        if hasattr(model, "predict_proba"):
+            proba = model.predict_proba(scaled_features)[0, 1]
+
+        if int(pred[0]) == 1:
+            col2.success(f"Prediction: Positive for diabetes. Probability: {proba:.2f}" if proba is not None else "Prediction: Positive for diabetes.")
+        else:
+            col2.success(f"Prediction: Negative for diabetes. Probability: {proba:.2f}" if proba is not None else "Prediction: Negative for diabetes.")
+
+    except FileNotFoundError as e:
+        col2.error(f"Model/scaler file not found: {e}")
+    except Exception as e:
+        col2.error(f"An error occurred while predicting: {e}")
